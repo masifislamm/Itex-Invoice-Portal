@@ -1,257 +1,204 @@
-## Overview
+<div align="center">
 
-This project uses the following tech stack:
-- Vite
-- Typescript
-- React Router v7 (all imports from `react-router` instead of `react-router-dom`)
-- React 19 (for frontend components)
-- Tailwind v4 (for styling)
-- Shadcn UI (for UI components library)
-- Lucide Icons (for icons)
-- Convex (for backend & database)
-- Convex Auth (for authentication)
-- Framer Motion (for animations)
-- Three js (for 3d models)
+# ITEX Invoice Generator
 
-All relevant files live in the 'src' directory.
+Modern React + Convex app for generating invoices, proformas, challans, and more—styled with Tailwind v4 and shadcn/ui, animated with Framer Motion, and ready for local and cloud.
 
-Use pnpm for the package manager.
+![App Preview](./preview.png)
 
-## Setup
+</div>
 
-This project is set up already and running on a cloud environment, as well as a convex development in the sandbox.
+## Table of Contents
+
+- Quick Start
+- Environment Variables
+- Authentication (important)
+- Project Scripts
+- Tech Stack
+- Project Structure
+- Conventions (UI, routing, theming)
+- Using Convex (schema, actions, gotchas)
+- Build, Preview, and Optional Deno Serve
+- Troubleshooting
+
+## Quick Start
+
+Prerequisites:
+- Node.js 20+ and pnpm
+- A Convex account (we’ll use npx so no global install needed)
+- On Windows: Git Bash or WSL (for the provided bash script), otherwise use the manual steps below
+
+1) Install dependencies
+
+```powershell
+pnpm install
+```
+
+2) Start Convex dev (keep this running in its own terminal)
+
+```powershell
+npx convex dev
+```
+
+This opens a browser to sign in and prints a local Convex URL, e.g. http://127.0.0.1:3632.
+
+3) Create client env file (.env.local) for Vite
+
+```dotenv
+VITE_CONVEX_URL=http://127.0.0.1:3632
+CONVEX_DEPLOYMENT=dev
+```
+
+4) Configure Convex server env (Auth)
+
+The backend needs these variables: `JWKS`, `JWT_PRIVATE_KEY`, and `SITE_URL`.
+
+- Option A (recommended): run the helper script with Git Bash/WSL
+
+```bash
+bash set-convex-jwt-env.sh
+```
+
+- Option B (manual, PowerShell-friendly): set them with Convex CLI
+
+```powershell
+npx convex env set JWKS "<your_jwks_or_public_keys_json>"
+npx convex env set JWT_PRIVATE_KEY "<your_private_key_pem_or_jwk>"
+npx convex env set SITE_URL "http://localhost:5173"
+```
+
+5) Run the Vite dev server (new terminal)
+
+```powershell
+pnpm dev
+```
+
+Open http://localhost:5173 and go to /auth to sign in (email OTP + anonymous are supported).
 
 ## Environment Variables
 
-The project is set up with project specific CONVEX_DEPLOYMENT and VITE_CONVEX_URL environment variables on the client side.
+Client-side (.env.local):
+- `VITE_CONVEX_URL` — Must match the URL printed by `npx convex dev`.
+- `CONVEX_DEPLOYMENT` — Typically `dev` for local.
 
-The convex server has a separate set of environment variables that are accessible by the convex backend.
+Convex server-side (managed via `npx convex env set`):
+- `JWKS` — JSON Web Key Set; used to validate tokens.
+- `JWT_PRIVATE_KEY` — Private key for issuing tokens in flows that need it.
+- `SITE_URL` — Base app URL, e.g. http://localhost:5173.
 
-Currently, these variables include auth-specific keys: JWKS, JWT_PRIVATE_KEY, and SITE_URL.
+## Authentication (important)
 
+Auth is fully wired up with Convex Auth using email OTP and anonymous sessions.
 
-# Using Authentication (Important!)
+- Don’t modify: `src/convex/auth/emailOtp.ts`, `src/convex/auth.config.ts`, `src/convex/auth.ts`.
+- Frontend auth hook: `useAuth` from `@/hooks/use-auth`.
 
-You must follow these conventions when using authentication.
+Example:
 
-## Auth is already set up.
-
-All convex authentication functions are already set up. The auth currently uses email OTP and anonymous users, but can support more.
-
-The email OTP configuration is defined in `src/convex/auth/emailOtp.ts`. DO NOT MODIFY THIS FILE.
-
-Also, DO NOT MODIFY THESE AUTH FILES: `src/convex/auth.config.ts` and `src/convex/auth.ts`.
-
-## Using Convex Auth on the backend
-
-On the `src/convex/users.ts` file, you can use the `getCurrentUser` function to get the current user's data.
-
-## Using Convex Auth on the frontend
-
-The `/auth` page is already set up to use auth. Navigate to `/auth` for all log in / sign up sequences.
-
-You MUST use this hook to get user data. Never do this yourself without the hook:
-```typescript
+```ts
 import { useAuth } from "@/hooks/use-auth";
-
 const { isLoading, isAuthenticated, user, signIn, signOut } = useAuth();
 ```
 
-## Protected Routes
+Protected routes: use `useAuth` to gate and redirect to `/auth`.
 
-When protecting a page, use the auth hooks to check for authentication and redirect to /auth.
+After successful auth: add your post-login redirect in `src/main.tsx`.
 
-## Auth Page
+## Project Scripts
 
-The auth page is defined in `src/pages/Auth.tsx`. Redirect authenticated pages and sign in / sign up to /auth.
+Defined in `package.json`:
 
-## Authorization
+- `pnpm dev` — Start Vite dev server
+- `pnpm build` — Type-check and build production assets
+- `pnpm preview` — Preview built assets locally
+- `pnpm lint` — Lint the project
+- `pnpm format` — Run Prettier
 
-You can perform authorization checks on the frontend and backend.
+## Tech Stack
 
-On the frontend, you can use the `useAuth` hook to get the current user's data and authentication state.
+- Vite + TypeScript
+- React 19 + React Router v7 (import from `react-router`)
+- Tailwind v4 + shadcn/ui (Radix primitives)
+- Lucide Icons
+- Convex (backend + DB) + Convex Auth
+- Framer Motion
+- Three.js
 
-You should also be protecting queries, mutations, and actions at the base level, checking for authorization securely.
+## Project Structure
 
-## Adding a redirect after auth
+Key paths:
 
-In `src/main.tsx`, you must add a redirect after auth URL to redirect to the correct dashboard/profile/page that should be created after authentication.
+- `src/` — App code (pages, components, hooks, lib)
+- `src/components/ui` — shadcn/ui primitives
+- `convex/` — Convex backend (schema, functions, auth config)
+- `public/` — Static assets (logos, icons)
+- `main.ts` — Optional Deno static server for the built app
 
-# Frontend Conventions
+## Conventions (UI, routing, theming)
 
-You will be using the Vite frontend with React 19, Tailwind v4, and Shadcn UI.
+- Pages in `src/pages`; wire new routes in `src/main.tsx`.
+- shadcn/ui primitives live under `src/components/ui` and should be used by default.
+- Keep designs mobile-first and responsive. Use container widths to avoid stretched layouts.
+- Prefer minimal borders over heavy shadows; avoid nested cards.
+- Use `cursor-pointer` on clickable elements; headings should use `tracking-tight font-bold`.
+- Use Sonner toasts for feedback: `import { toast } from "sonner"`.
+- Use Framer Motion for animations (fade/slide in/out, render transitions, button taps).
+- Theme and colors: change in `src/index.css` (oklch variables) and shared UI primitives.
 
-Generally, pages should be in the `src/pages` folder, and components should be in the `src/components` folder.
+## Using Convex
 
-Shadcn primitives are located in the `src/components/ui` folder and should be used by default.
+Schema: `convex/schema.ts` (don’t duplicate `_creationTime` indexes; don’t include `_id`/`_creationTime` in documents you write).
 
-## Page routing
+Actions vs queries/mutations:
+- External calls must use Actions with `"use node"` at the file top.
+- Don’t mix queries/mutations in the same file that has `"use node"`.
 
-Your page component should go under the `src/pages` folder.
-
-When adding a page, update the react router configuration in `src/main.tsx` to include the new route you just added.
-
-## Shad CN conventions
-
-Follow these conventions when using Shad CN components, which you should use by default.
-- Remember to use "cursor-pointer" to make the element clickable
-- For title text, use the "tracking-tight font-bold" class to make the text more readable
-- Always make apps MOBILE RESPONSIVE. This is important
-- AVOID NESTED CARDS. Try and not to nest cards, borders, components, etc. Nested cards add clutter and make the app look messy.
-- AVOID SHADOWS. Avoid adding any shadows to components. stick with a thin border without the shadow.
-- Avoid skeletons; instead, use the loader2 component to show a spinning loading state when loading data.
-
-
-## Landing Pages
-
-You must always create good-looking designer-level styles to your application. 
-- Make it well animated and fit a certain "theme", ie neo brutalist, retro, neumorphism, glass morphism, etc
-
-Use known images and emojis from online.
-
-If the user is logged in already, show the get started button to say "Dashboard" or "Profile" instead to take them there.
-
-## Responsiveness and formatting
-
-Make sure pages are wrapped in a container to prevent the width stretching out on wide screens. Always make sure they are centered aligned and not off-center.
-
-Always make sure that your designs are mobile responsive. Verify the formatting to ensure it has correct max and min widths as well as mobile responsiveness.
-
-- Always create sidebars for protected dashboard pages and navigate between pages
-- Always create navbars for landing pages
-- On these bars, the created logo should be clickable and redirect to the index page
-
-## Animating with Framer Motion
-
-You must add animations to components using Framer Motion. It is already installed and configured in the project.
-
-To use it, import the `motion` component from `framer-motion` and use it to wrap the component you want to animate.
-
-
-### Other Items to animate
-- Fade in and Fade Out
-- Slide in and Slide Out animations
-- Rendering animations
-- Button clicks and UI elements
-
-Animate for all components, including on landing page and app pages.
-
-## Three JS Graphics
-
-Your app comes with three js by default. You can use it to create 3D graphics for landing pages, games, etc.
-
-
-## Colors
-
-You can override colors in: `src/index.css`
-
-This uses the oklch color format for tailwind v4.
-
-Always use these color variable names.
-
-Make sure all ui components are set up to be mobile responsive and compatible with both light and dark mode.
-
-Set theme using `dark` or `light` variables at the parent className.
-
-## Styling and Theming
-
-When changing the theme, always change the underlying theme of the shad cn components app-wide under `src/components/ui` and the colors in the index.css file.
-
-Avoid hardcoding in colors unless necessary for a use case, and properly implement themes through the underlying shad cn ui components.
-
-When styling, ensure buttons and clickable items have pointer-click on them (don't by default).
-
-Always follow a set theme style and ensure it is tuned to the user's liking.
-
-## Toasts
-
-You should always use toasts to display results to the user, such as confirmations, results, errors, etc.
-
-Use the shad cn Sonner component as the toaster. For example:
-
-```
-import { toast } from "sonner"
-
-import { Button } from "@/components/ui/button"
-export function SonnerDemo() {
-  return (
-    <Button
-      variant="outline"
-      onClick={() =>
-        toast("Event has been created", {
-          description: "Sunday, December 03, 2023 at 9:00 AM",
-          action: {
-            label: "Undo",
-            onClick: () => console.log("Undo"),
-          },
-        })
-      }
-    >
-      Show Toast
-    </Button>
-  )
-}
-```
-
-Remember to import { toast } from "sonner". Usage: `toast("Event has been created.")`
-
-## Dialogs
-
-Always ensure your larger dialogs have a scroll in its content to ensure that its content fits the screen size. Make sure that the content is not cut off from the screen.
-
-Ideally, instead of using a new page, use a Dialog instead. 
-
-# Using the Convex backend
-
-You will be implementing the convex backend. Follow your knowledge of convex and the documentation to implement the backend.
-
-## The Convex Schema
-
-You must correctly follow the convex schema implementation.
-
-The schema is defined in `src/convex/schema.ts`.
-
-Do not include the `_id` and `_creationTime` fields in your queries (it is included by default for each table).
-Do not index `_creationTime` as it is indexed for you. Never have duplicate indexes.
-
-
-## Convex Actions: Using CRUD operations
-
-When running anything that involves external connections, you must use a convex action with "use node" at the top of the file.
-
-You cannot have queries or mutations in the same file as a "use node" action file. Thus, you must use pre-built queries and mutations in other files.
-
-You can also use the pre-installed internal crud functions for the database:
+CRUD helpers example (internal use):
 
 ```ts
-// in convex/users.ts
+// convex/users.ts
 import { crud } from "convex-helpers/server/crud";
-import schema from "./schema.ts";
-
+import schema from "./schema";
 export const { create, read, update, destroy } = crud(schema, "users");
-
-// in some file, in an action:
-const user = await ctx.runQuery(internal.users.read, { id: userId });
-
-await ctx.runMutation(internal.users.update, {
-  id: userId,
-  patch: {
-    status: "inactive",
-  },
-});
 ```
 
+Common gotchas:
+- Use `_id` for document IDs and `Id<"Table">` types (not `string`).
+- Use `Doc<"Table">` for document shapes.
+- Keep `schemaValidation` false in the schema file.
+- Handle `null | undefined` from queries on both frontend and backend.
+- Use aliased imports like `@/convex/_generated/api` and `@/convex/_generated/server`.
+- Import `useQuery`, `useMutation`, `useAction` from `convex/react`.
 
-## Common Convex Mistakes To Avoid
+## Build, Preview, and Optional Deno Serve
 
-When using convex, make sure:
-- Document IDs are referenced as `_id` field, not `id`.
-- Document ID types are referenced as `Id<"TableName">`, not `string`.
-- Document object types are referenced as `Doc<"TableName">`.
-- Keep schemaValidation to false in the schema file.
-- You must correctly type your code so that it passes the type checker.
-- You must handle null / undefined cases of your convex queries for both frontend and backend, or else it will throw an error that your data could be null or undefined.
-- Always use the `@/folder` path, with `@/convex/folder/file.ts` syntax for importing convex files.
-- This includes importing generated files like `@/convex/_generated/server`, `@/convex/_generated/api`
-- Remember to import functions like useQuery, useMutation, useAction, etc. from `convex/react`
-- NEVER have return type validators.
+Build:
+
+```powershell
+pnpm build
+```
+
+Preview the built app:
+
+```powershell
+pnpm preview
+```
+
+Serve with Deno (optional, after `pnpm build`):
+
+```powershell
+# Requires Deno installed
+deno run -A main.ts
+```
+
+## Troubleshooting
+
+- “VITE_CONVEX_URL not set”: ensure `.env.local` matches the URL printed by `npx convex dev`.
+- Auth errors (bad/missing keys): set `JWKS`, `JWT_PRIVATE_KEY`, and `SITE_URL` using the script or manual CLI.
+- Type errors with IDs: ensure you’re using `Id<"Table">` and `_id` rather than `string` and `id`.
+- Windows + bash script: run `set-convex-jwt-env.sh` from Git Bash/WSL, or set vars with `npx convex env set`.
+- Query returning null/undefined: handle defensive checks in UI and server code to satisfy TypeScript.
+
+---
+
+If you want me to point the favicon to a local asset instead of the remote URL in `index.html`, or to add CI, tests, or deployment docs, say the word and I’ll wire it up.
