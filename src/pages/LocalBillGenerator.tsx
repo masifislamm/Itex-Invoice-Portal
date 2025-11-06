@@ -70,6 +70,8 @@ export default function LocalBillGenerator() {
     bankAddress: "Foteh Mansion, 19 Main Road, Tongi, Gazipur-1710, Bangladesh",
     bankSwiftCode: "IBBLBDDH216",
     totalInWords: "",
+    signatureUrl: "",
+    sealUrl: "",
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -127,6 +129,8 @@ export default function LocalBillGenerator() {
         bankAddress: existingInvoice.bankAddress || "",
         bankSwiftCode: existingInvoice.bankSwiftCode || "",
         totalInWords: existingInvoice.totalInWords || "",
+        signatureUrl: existingInvoice.signatureUrl || "",
+        sealUrl: existingInvoice.sealUrl || "",
       });
     }
   }, [existingInvoice, isEditing]);

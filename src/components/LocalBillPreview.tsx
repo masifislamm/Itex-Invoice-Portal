@@ -252,6 +252,23 @@ export function LocalBillPreview({ data }: LocalBillPreviewProps) {
           )}
         </div>
       )}
+
+      {/* Signature Section - Right Aligned */}
+      <div className="mt-16 flex justify-end">
+        <div className="text-center">
+          <div className="mb-2 flex flex-col items-center gap-2">
+            {data.sealUrl && (
+              <img src={data.sealUrl} alt="Seal" className="h-24 w-24 object-contain" />
+            )}
+            {data.signatureUrl && (
+              <img src={data.signatureUrl} alt="Signature" className="h-12 w-auto object-contain" />
+            )}
+          </div>
+          <div className="pt-2 text-sm min-w-[250px]">
+            <p>Authorizing signature & Seal</p>
+          </div>
+        </div>
+      </div>
     </Card>
   );
 }

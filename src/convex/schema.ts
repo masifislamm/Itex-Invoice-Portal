@@ -117,6 +117,8 @@ const schema = defineSchema(
       bankAddress: v.optional(v.string()),
       bankSwiftCode: v.optional(v.string()),
       totalInWords: v.optional(v.string()),
+      signatureUrl: v.optional(v.string()),
+      sealUrl: v.optional(v.string()),
     })
       .index("by_user", ["userId"])
       .index("by_user_and_status", ["userId", "status"])

@@ -60,6 +60,8 @@ export interface LocalBillData {
   bankAddress?: string;
   bankSwiftCode?: string;
   totalInWords?: string;
+  signatureUrl?: string;
+  sealUrl?: string;
 }
 
 interface LocalBillFormProps {
@@ -699,6 +701,22 @@ export function LocalBillForm({ data, onChange, onSave, isLoading }: LocalBillFo
               rows={3}
             />
           </div>
+          <ImageSelector
+            label="Signature Image"
+            value={data.signatureUrl || ""}
+            onChange={(value) => updateField("signatureUrl", value)}
+            category="signature"
+            placeholder="https://example.com/signature.png"
+            id="signatureUrl"
+          />
+          <ImageSelector
+            label="Seal Image"
+            value={data.sealUrl || ""}
+            onChange={(value) => updateField("sealUrl", value)}
+            category="seal"
+            placeholder="https://example.com/seal.png"
+            id="sealUrl"
+          />
         </CardContent>
       </Card>
 
