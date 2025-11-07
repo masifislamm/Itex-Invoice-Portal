@@ -69,7 +69,7 @@ export function ProformaInvoicePreview({ data }: ProformaInvoicePreviewProps) {
             <span className="ml-2">{formatDate(data.date)}</span>
           </div>
           <div>
-            <span className="font-semibold italic">SHIPPER:</span>
+            <span className="font-semibold italic">SUPPLIER:</span>
             <span className="ml-2">{data.shipper}</span>
           </div>
           <div>
