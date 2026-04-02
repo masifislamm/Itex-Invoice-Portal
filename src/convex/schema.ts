@@ -248,6 +248,13 @@ const schema = defineSchema(
     })
       .index("by_user", ["userId"]),
 
+    // OTP rate limiting table
+    otpRateLimits: defineTable({
+      email: v.string(),
+      count: v.number(),
+      windowStart: v.number(),
+    }).index("by_email", ["email"]),
+
     // Local Chalans table
     localChalans: defineTable({
       userId: v.id("users"),

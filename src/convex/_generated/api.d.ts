@@ -11,6 +11,7 @@
 import type * as analytics from "../analytics.js";
 import type * as applications from "../applications.js";
 import type * as auth_emailOtp from "../auth/emailOtp.js";
+import type * as auth_rateLimiter from "../auth/rateLimiter.js";
 import type * as auth from "../auth.js";
 import type * as files from "../files.js";
 import type * as http from "../http.js";
@@ -38,6 +39,7 @@ declare const fullApi: ApiFromModules<{
   analytics: typeof analytics;
   applications: typeof applications;
   "auth/emailOtp": typeof auth_emailOtp;
+  "auth/rateLimiter": typeof auth_rateLimiter;
   auth: typeof auth;
   files: typeof files;
   http: typeof http;
