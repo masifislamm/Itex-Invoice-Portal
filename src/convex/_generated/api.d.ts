@@ -9,6 +9,7 @@
  */
 
 import type * as analytics from "../analytics.js";
+import type * as applications from "../applications.js";
 import type * as auth_emailOtp from "../auth/emailOtp.js";
 import type * as auth from "../auth.js";
 import type * as files from "../files.js";
@@ -35,6 +36,7 @@ import type {
  */
 declare const fullApi: ApiFromModules<{
   analytics: typeof analytics;
+  applications: typeof applications;
   "auth/emailOtp": typeof auth_emailOtp;
   auth: typeof auth;
   files: typeof files;

@@ -166,6 +166,24 @@ export default function Dashboard() {
                 </CardContent>
               </Card>
             </motion.div>
+            
+            <motion.div
+              whileHover={{ scale: 1.02, y: -4 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <Card 
+                className="cursor-pointer border-2 hover:border-primary hover:shadow-lg transition-all duration-200 bg-gradient-to-br from-red-50 to-rose-50"
+                onClick={() => navigate("/application/new")}
+              >
+                <CardContent className="p-6 flex flex-col items-center justify-center h-32 gap-3">
+                  <div className="h-12 w-12 rounded-full bg-red-100 flex items-center justify-center">
+                    <Plus className="h-6 w-6 text-red-600" />
+                  </div>
+                  <span className="text-base font-semibold text-gray-900">Application</span>
+                </CardContent>
+              </Card>
+            </motion.div>
           </div>
         </motion.div>
 

@@ -231,6 +231,23 @@ const schema = defineSchema(
       .index("by_user", ["userId"])
       .index("by_user_and_category", ["userId", "fileCategory"]),
 
+    // Applications table
+    applications: defineTable({
+      userId: v.id("users"),
+      date: v.string(),
+      commissionCurrency: v.string(),
+      commissionAmount: v.string(),
+      commissionInWords: v.optional(v.string()),
+      supplierCompanyName: v.string(),
+      supplierCountry: v.string(),
+      recipientAccountNumber: v.string(),
+      transferCurrency: v.optional(v.string()),
+      signatureUrl: v.optional(v.string()),
+      sealUrl: v.optional(v.string()),
+      status: v.optional(v.union(v.literal("draft"), v.literal("sent"), v.literal("approved"), v.literal("rejected"))),
+    })
+      .index("by_user", ["userId"]),
+
     // Local Chalans table
     localChalans: defineTable({
       userId: v.id("users"),

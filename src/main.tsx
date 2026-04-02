@@ -18,6 +18,7 @@ import ProformaInvoiceGenerator from "./pages/ProformaInvoiceGenerator.tsx";
 import LocalProformaGenerator from "./pages/LocalProformaGenerator.tsx";
 import LocalChalanGenerator from "./pages/LocalChalanGenerator.tsx";
 import LocalBillGenerator from "./pages/LocalBillGenerator.tsx";
+import ApplicationGenerator from "./pages/ApplicationGenerator.tsx";
 import "./types/global.d.ts";
 
 const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string);
@@ -69,6 +70,8 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/local-chalan/:id" element={<LocalChalanGenerator />} />
             <Route path="/local-bill/new" element={<LocalBillGenerator />} />
             <Route path="/local-bill/:id" element={<LocalBillGenerator />} />
+            <Route path="/application/new" element={<ApplicationGenerator />} />
+            <Route path="/application/:id" element={<ApplicationGenerator />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
