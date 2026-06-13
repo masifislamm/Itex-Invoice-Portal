@@ -179,8 +179,24 @@ export function LocalBillPreview({ data }: LocalBillPreviewProps) {
         </table>
       </div>
 
-      {/* Totals */}
-      <div className="flex justify-end mb-2">
+      {/* Totals + Signature side by side */}
+      <div className="flex justify-between items-end mb-2" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
+        {/* Signature Section - Left side */}
+        <div className="text-center">
+          <div className="mb-2 flex flex-col items-center gap-2">
+            {data.sealUrl && (
+              <img src={data.sealUrl} alt="Seal" className="h-24 w-24 object-contain" />
+            )}
+            {data.signatureUrl && (
+              <img src={data.signatureUrl} alt="Signature" className="h-12 w-auto object-contain" />
+            )}
+          </div>
+          <div className="pt-2 text-sm min-w-[200px]">
+            <p>Authorizing signature & Seal</p>
+          </div>
+        </div>
+
+        {/* Totals - Right side */}
         <div className="w-60 text-sm">
           <div className="flex justify-between py-1.5">
             <span>Subtotal:</span>
@@ -252,23 +268,6 @@ export function LocalBillPreview({ data }: LocalBillPreviewProps) {
           )}
         </div>
       )}
-
-      {/* Signature Section - Right Aligned */}
-      <div className="mt-16 flex justify-end">
-        <div className="text-center">
-          <div className="mb-2 flex flex-col items-center gap-2">
-            {data.sealUrl && (
-              <img src={data.sealUrl} alt="Seal" className="h-24 w-24 object-contain" />
-            )}
-            {data.signatureUrl && (
-              <img src={data.signatureUrl} alt="Signature" className="h-12 w-auto object-contain" />
-            )}
-          </div>
-          <div className="pt-2 text-sm min-w-[250px]">
-            <p>Authorizing signature & Seal</p>
-          </div>
-        </div>
-      </div>
     </Card>
   );
 }
